@@ -1,4 +1,4 @@
-import { removeRule} from '@/services/ant-design-pro/api';
+// @ts-nocheck
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -12,36 +12,16 @@ import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import {
   addInterfaceInfoUsingPOST,
-  listInterfaceInfoByPageUsingGET, updateInterfaceInfoUsingPOST
+  deleteInterfaceInfoUsingPOST,
+  listInterfaceInfoByPageUsingGET,
+  offlineInterfaceInfoUsingPOST,
+  onlineInterfaceInfoUsingPOST,
+  updateInterfaceInfoUsingPOST
 } from "@/services/chrisApi-backend/interfaceInfoController";
 import type {SortOrder} from "antd/lib/table/interface";
-import CreateModal from "@/pages/InterfaceInfo/components/CreateModal";
-import UpdateModal from "@/pages/InterfaceInfo/components/UpdateModal";
+import CreateModal from "@/pages/Admin/InterfaceInfo/components/CreateModal";
+import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 
-
-
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Delete failed, please try again');
-    return false;
-  }
-};
 
 const TableList: React.FC = () => {
   /**
@@ -53,7 +33,7 @@ const TableList: React.FC = () => {
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
-  const [updateModalVisible, handleupdateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
@@ -64,12 +44,13 @@ const TableList: React.FC = () => {
    * @zh-CN 添加节点
    * @param fields
    */
-  const handleAdd = async (fields: API.InterfaceInfo) => {
+    const handleAdd = async (fields: API.InterfaceInfo) => {
     const hide = message.loading('Adding');
     try {
       await addInterfaceInfoUsingPOST({ ...fields });
       hide();
       message.success('Added successfully');
+      actionRef.current?.reload(); //添加成功自动刷新
       handleModalVisible(false);
       return true;
     } catch (error: any) {
@@ -86,23 +67,107 @@ const TableList: React.FC = () => {
    *
    * @param fields
    */
+  // const handleUpdate = async (fields: API.InterfaceInfo) => {
+  //   const hide = message.loading('Modifying');
+  //   try {
+  //     await updateInterfaceInfoUsingPOST({...fields});
+  //     hide();
+  //     message.success('Modified successfully');
+  //     actionRef.current?.reload(); //修改成功自动刷新
+  //     return true;
+  //   } catch (error: any) {
+  //     hide();
+  //     message.error('Modification failed, please try again!'+ error.message);
+  //     return false;
+  //   }
+  // };
   const handleUpdate = async (fields: API.InterfaceInfo) => {
-    const hide = message.loading('Modifying');
+      if (!currentRow) {
+        return;
+      }
+      const hide = message.loading('修改中');
+      try {
+        await updateInterfaceInfoUsingPOST({
+          id: currentRow.id,
+          ...fields,
+        });
+        hide();
+        message.success('操作成功');
+        return true;
+      } catch (error: any) {
+        hide();
+        message.error('操作失败，' + error.message);
+        return false;
+      }
+    };
+  /**
+   *  发布接口
+   *
+   * @param record
+   */
+  const handleOnline = async (record: API.IdRequest) => {
+    const hide = message.loading('Online');
+    if (!record) return true;
     try {
-      await updateInterfaceInfoUsingPOST({
-        ...fields
+      await onlineInterfaceInfoUsingPOST({
+        id: record.id
       });
       hide();
-
-      message.success('Modified successfully');
+      message.success('Online successfully and will refresh soon');
+      actionRef.current?.reload(); //发布成功自动刷新
       return true;
     } catch (error: any) {
       hide();
-      message.error('Modification failed, please try again!'+ error.message);
+      message.error('Online failed, please try again' + error.message);
       return false;
     }
   };
 
+  /**
+   *  下线接口
+   *
+   * @param record
+   */
+  const handleOffline = async (record: API.IdRequest) => {
+    const hide = message.loading('Offline');
+    if (!record) return true;
+    try {
+      await offlineInterfaceInfoUsingPOST({
+        id: record.id
+      });
+      hide();
+      message.success('Offline successfully and will refresh soon');
+      actionRef.current?.reload(); //下线成功自动刷新
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error('Offline failed, please try again' + error.message);
+      return false;
+    }
+  };
+  /**
+   *  Delete node
+   * @zh-CN 删除节点
+   *
+   * @param record
+   */
+  const handleRemove = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('Deleting');
+    if (!record) return true;
+    try {
+      await deleteInterfaceInfoUsingPOST({
+        id: record.id
+      });
+      hide();
+      message.success('Deleted successfully and will refresh soon');
+      actionRef.current?.reload(); //删除成功自动刷新
+      return true;
+    } catch (error: any) {
+      hide();
+      message.error('Delete failed, please try again' + error.message);
+      return false;
+    }
+  };
 
   /**
    * @en-US International configuration
@@ -187,12 +252,45 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            handleupdateModalVisible(true);
+            handleUpdateModalVisible(true);
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Modification" />
+          Modify
+          {/*<FormattedMessage id="pages.searchTable.config" defaultMessage="" />*/}
         </a>,
+
+          record.status === 0 ? <a
+          key="config"
+          onClick={() => {
+            handleOnline(record);
+            // setCurrentRow(record);
+          }}
+        >
+          Online
+        </a> : null,
+        record.status === 1 ? <Button
+          type="text"
+          danger
+          key="config"
+          onClick={() => {
+            handleOffline(record);
+            // setCurrentRow(record);
+          }}
+        >
+          Offline
+        </Button> : null,
+
+        <Button
+          type="text"
+          danger
+          key="config"
+          onClick={() => {
+            handleRemove(record);
+          }}
+        >
+          Delete
+        </Button>,
       ],
     },
   ];
@@ -289,7 +387,7 @@ const TableList: React.FC = () => {
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleupdateModalVisible(false);
+            handleUpdateModalVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -297,7 +395,7 @@ const TableList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleupdateModalVisible(false);
+          handleUpdateModalVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
@@ -335,3 +433,5 @@ const TableList: React.FC = () => {
 };
 
 export default TableList;
+
+// export default InterfaceInfo;

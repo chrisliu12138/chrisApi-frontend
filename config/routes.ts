@@ -12,6 +12,12 @@
  */
 export default [
   {
+    path: '/',
+    name: 'welcome',
+    icon: 'smile',
+    component: './Index',
+  },
+  {
     path: '/user',
     layout: false,
     routes: [
@@ -22,18 +28,13 @@ export default [
       },
     ],
   },
+
   // {
-  //   path: '/welcome',
-  //   name: 'welcome',
-  //   icon: 'smile',
-  //   component: './Welcome',
+  //   name: 'Interface Management',
+  //   icon: 'table',
+  //   path: '/admin/interface_info',
+  //   component: './Admin/InterfaceInfo',
   // },
-  {
-    name: 'Interface Management',
-    icon: 'table',
-    path: '/admin/interface_info',
-    component: './InterfaceInfo',
-  },
   {
     path: '/admin',
     name: 'admin',
@@ -44,7 +45,7 @@ export default [
         name: 'Interface Management',
         icon: 'table',
         path: '/admin/interface_info',
-        component: './InterfaceInfo',
+        component: './Admin/InterfaceInfo',
       },
       {
         path: '/admin/sub-page',
@@ -54,10 +55,11 @@ export default [
     ],
   },
 
-  // {
-  //   path: '/',
-  //   redirect: '/welcome',
-  // },
+  {
+    path: '/',
+    redirect: '/welcome',
+  },
+  // { path: '/interface_info/:id', component: './InterfaceInfo', hideInMenu: true },
   {
     path: '*',
     layout: false,

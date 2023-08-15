@@ -90,6 +90,18 @@ declare namespace API {
     id?: number;
   };
 
+  type IdRequest = {
+    description?: string;
+    id?: number;
+    method?: string;
+    name?: string;
+    requestHeader?: string;
+    requestParams?: string;
+    responseHeader?: string;
+    status?: number;
+    url?: string;
+  };
+
   type InterfaceInfo = {
     createTime?: string;
     description?: string;
@@ -108,24 +120,11 @@ declare namespace API {
 
   type InterfaceInfoAddRequest = {
     description?: string;
-    isDelete?: number;
     method?: string;
     name?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
-    url?: string;
-  };
-
-  type InterfaceInfoUpdateRequest = {
-    description?: string;
-    id?: number;
-    method?: string;
-    name?: string;
-    requestHeader?: string;
-    requestParams?: string;
-    responseHeader?: string;
-    status?: number;
     url?: string;
   };
 
@@ -133,7 +132,6 @@ declare namespace API {
     current?: number;
     description?: string;
     id?: number;
-    isDelete?: number;
     method?: string;
     name?: string;
     pageSize?: number;
@@ -151,7 +149,6 @@ declare namespace API {
     current?: number;
     description?: string;
     id?: number;
-    isDelete?: number;
     method?: string;
     name?: string;
     pageSize?: number;
