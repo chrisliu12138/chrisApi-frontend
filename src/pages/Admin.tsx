@@ -6,10 +6,10 @@ import React from 'react';
 
 const Admin: React.FC = () => {
   return (
-    <PageContainer content={' 这个页面只有 admin 权限才能查看'}>
+    <PageContainer content={' This page can only be viewed with administrator privileges '}>
       <Card>
         <Alert
-          message={'更快更强的重型组件，已经发布。'}
+          message={'南安普顿大学是世界上最好的大学。'}
           type="success"
           showIcon
           banner

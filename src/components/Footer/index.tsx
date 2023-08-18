@@ -6,8 +6,8 @@ import React from 'react';
 const Footer: React.FC = () => {
   const intl = useIntl();
   const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: '蚂蚁集团体验技术部出品',
+    id: 'none',
+    defaultMessage: 'Produced by Hao Liu',
   });
 
   const currentYear = new Date().getFullYear();
@@ -19,12 +19,12 @@ const Footer: React.FC = () => {
       }}
       copyright={`${currentYear} ${defaultMessage}`}
       links={[
-        {
-          key: 'Ant Design Pro',
-          title: 'Ant Design Pro',
-          href: 'https://pro.ant.design',
-          blankTarget: true,
-        },
+        // {
+        //   key: 'Ant Design Pro',
+        //   title: 'Ant Design Pro',
+        //   href: 'https://pro.ant.design',
+        //   blankTarget: true,
+        // },
         {
           key: 'github',
           title: <GithubOutlined />,
@@ -32,9 +32,9 @@ const Footer: React.FC = () => {
           blankTarget: true,
         },
         {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: 'chrisliu12138',
+          title: 'chrisliu12138',
+          href: 'https://github.com/chrisliu12138',
           blankTarget: true,
         },
       ]}

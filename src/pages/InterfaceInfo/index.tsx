@@ -1,3 +1,4 @@
+// @ts-ignore
 import {
   getInterfaceInfoByIdUsingGET,
   invokeInterfaceUsingPOST,
@@ -7,6 +8,7 @@ import {
   getUserInterfaceInfoByUserIdAndInterfaceInfoIdUsingGET,
 } from '@/services/chrisApi-backend/userInterfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
+
 import { useModel } from '@umijs/max';
 import { Button, Card, Descriptions, Form, Input, message } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -49,7 +51,7 @@ const InterfaceInfo: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     if (!params.id) {
-      message.error('参数不存在');
+      message.error('Parameter does not exist');
       return;
     }
     try {
@@ -58,7 +60,7 @@ const InterfaceInfo: React.FC = () => {
       });
       setData(res?.data);
     } catch (e: any) {
-      message.error('获取接口信息失败 ' + e.message);
+      message.error('Failed to get interface information ' + e.message);
     }
     setLoading(false);
   };
@@ -71,7 +73,7 @@ const InterfaceInfo: React.FC = () => {
       setInvokeLeftNum(res?.data?.leftNum);
       setInvokeTotalNum(res?.data?.totalNum);
     } catch (e: any) {
-      message.error('获取调用次数失败 ' + e.message);
+      message.error('Failed to get number of calls ' + e.message);
     }
   };
   useEffect(() => {
@@ -80,27 +82,27 @@ const InterfaceInfo: React.FC = () => {
   }, []);
   return (
     <PageContainer>
-      <Card loading={loading} title="接口信息">
+      <Card loading={loading} title="Interface Info">
         {data ? (
           <Descriptions column={2}>
-            <Descriptions.Item label="接口名称">{data?.name}</Descriptions.Item>
-            <Descriptions.Item label="接口描述">{data?.description}</Descriptions.Item>
-            <Descriptions.Item label="接口状态">{data?.status ? '开启' : '关闭'}</Descriptions.Item>
-            <Descriptions.Item label="接口方法">{data?.method}</Descriptions.Item>
-            <Descriptions.Item label="接口地址">{data?.url}</Descriptions.Item>
-            <Descriptions.Item label="请求参数">{data?.requestParams}</Descriptions.Item>
-            <Descriptions.Item label="请求头">
+            <Descriptions.Item label="Interface Name">{data?.name}</Descriptions.Item>
+            <Descriptions.Item label="Interface Description">{data?.description}</Descriptions.Item>
+            <Descriptions.Item label="Interface Status">{data?.status ? 'On' : 'Off'}</Descriptions.Item>
+            <Descriptions.Item label="Interface Method">{data?.method}</Descriptions.Item>
+            <Descriptions.Item label="Url">{data?.url}</Descriptions.Item>
+            <Descriptions.Item label="Request Params">{data?.requestParams}</Descriptions.Item>
+            <Descriptions.Item label="Request Header">
               &nbsp;&nbsp;&nbsp;{data?.requestHeader}
             </Descriptions.Item>
-            <Descriptions.Item label="响应头">
+            <Descriptions.Item label="Response Header">
               &nbsp;&nbsp;&nbsp;{data?.responseHeader}
             </Descriptions.Item>
           </Descriptions>
         ) : (
-          <>接口信息不存在</>
+          <>Interface information does not exist</>
         )}
       </Card>
-      <Card title="请求参数" style={{ marginTop: 18 }}>
+      <Card title="Request parameter" style={{ marginTop: 18 }}>
         <Form name="invoke" layout="vertical" onFinish={onFinish}>
           {Number(params?.id) === 1 ? (
             <Form.Item name="requestParams">
@@ -111,12 +113,12 @@ const InterfaceInfo: React.FC = () => {
           )}
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={invokeLoading}>
-              调用
+              Invoke
             </Button>
           </Form.Item>
         </Form>
       </Card>
-      <Card title="调用结果" style={{ marginTop: 18 }} loading={invokeLoading}>
+      <Card title="Invocation result" style={{ marginTop: 18 }} loading={invokeLoading}>
         {invokeRes ? (
           <Descriptions column={2}>
             <Descriptions.Item>{invokeRes}</Descriptions.Item>
@@ -125,12 +127,12 @@ const InterfaceInfo: React.FC = () => {
           <>请先点击调用获取结果</>
         )}
       </Card>
-      {/*<Card title="调用次数" style={{ marginTop: 18 }}>
-        <Descriptions column={1}>
-          <Descriptions.Item label="总调用次数">{invokeTotalNum}</Descriptions.Item>
-          <Descriptions.Item label="剩余调用次数">{invokeLeftNum}</Descriptions.Item>
-        </Descriptions>
-      </Card>*/}
+      {/*{<Card title="调用次数" style={{ marginTop: 18 }}>*/}
+      {/*  <Descriptions column={1}>*/}
+      {/*    <Descriptions.Item label="总调用次数">{invokeTotalNum}</Descriptions.Item>*/}
+      {/*    <Descriptions.Item label="剩余调用次数">{invokeLeftNum}</Descriptions.Item>*/}
+      {/*  </Descriptions>*/}
+      {/*</Card>}*/}
     </PageContainer>
   );
 };

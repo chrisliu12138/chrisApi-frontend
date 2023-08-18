@@ -17,6 +17,7 @@ export default [
     icon: 'smile',
     component: './Index',
   },
+  { path: '/interface_info/:id', component: './InterfaceInfo', hideInMenu: true },
   {
     path: '/user',
     layout: false,
@@ -59,7 +60,7 @@ export default [
     path: '/',
     redirect: '/welcome',
   },
-  // { path: '/interface_info/:id', component: './InterfaceInfo', hideInMenu: true },
+
   {
     path: '*',
     layout: false,

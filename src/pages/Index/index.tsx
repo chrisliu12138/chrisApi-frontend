@@ -19,7 +19,7 @@ const Index: React.FC = () => {
     avatar: 'https://gw.alipayobjects.com/zos/antfincdn/UCSiy1j6jx/xingzhuang.svg',
     content: item.description,
   }));
-  const loadData = async (page = 1, pageSize = 10) => {
+  const loadData = async (page = 1, pageSize = 6) => {
     setLoading(true);
     try {
       const res = await listInterfaceInfoByPageUsingGET({
@@ -29,7 +29,7 @@ const Index: React.FC = () => {
       setList(res?.data?.records ?? []);
       setTotal(res?.data?.total ?? 0);
     } catch (e: any) {
-      message.error('获取接口信息失败 ' + e.message);
+      message.error('Failed to get interface information ' + e.message);
     }
     setLoading(false);
   };
@@ -42,7 +42,11 @@ const Index: React.FC = () => {
     <PageContainer>
       <ProList
         pagination={{
-          pageSize: 10,
+          showTotal(total:number){
+            return 'Total:'+ total;
+          },
+          pageSize: 6,
+          total,
           onChange(page, pageSize) {
             loadData(page, pageSize);
           },

@@ -550,7 +550,7 @@ exports[`Login Page should login success 1`] = `
                     />
                   </svg>
                 </span>
-                 2023 Produced by Ant Financial Experience Department
+                 2023 Produced by Hao Liu
               </div>
             </div>
           </footer>
@@ -1094,7 +1094,7 @@ exports[`Login Page should show login form 1`] = `
               />
             </svg>
           </span>
-           2023 Produced by Ant Financial Experience Department
+           2023 Produced by Hao Liu
         </div>
       </div>
     </footer>
