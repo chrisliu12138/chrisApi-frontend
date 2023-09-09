@@ -8,6 +8,7 @@ import { requestConfig } from './requestConfig';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from '@/components/RightContent/AvatarDropdown';
 import {getLoginUserUsingGET} from "@/services/chrisApi-backend/userController";
+import defaultSettings from "../config/defaultSettings";
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -29,6 +30,39 @@ export async function getInitialState(): Promise<InitialState> {
   }
   return state;
 }
+
+// export async function getInitialState(): Promise<{
+//   settings?: Partial<LayoutSettings>;
+//   currentUser?: API.LoginUserVO;
+//   loading?: boolean;
+//   fetchUserInfo?: () => Promise<API.UserVO | undefined>;
+// }> {
+//   const fetchUserInfo = async () => {
+//     try {
+//       const res = await getLoginUserUsingGET({
+//         skipErrorHandler: true,
+//       });
+//       return res.data;
+//     } catch (error) {
+//       history.push(loginPath);
+//     }
+//     return undefined;
+//   };
+//   // 如果不是登录页面，执行
+//   const { location } = history;
+//   if (location.pathname !== loginPath) {
+//     const currentUser = await fetchUserInfo();
+//     return {
+//       fetchUserInfo,
+//       currentUser,
+//       settings: defaultSettings as Partial<LayoutSettings>,
+//     };
+//   }
+//   return {
+//     fetchUserInfo,
+//     settings: defaultSettings as Partial<LayoutSettings>,
+//   };
+// }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -76,7 +110,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
-            <span>OpenAPI 文档</span>
+            <span>OpenAPI Documentation</span>
           </Link>,
         ]
       : [],
@@ -94,7 +128,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               disableUrlParams
               enableDarkTheme
               // @ts-ignore
-              settings={initialState?.settings}
+              // settings={initialState?.settings}
+              settings={defaultSettings}
               onSettingChange={(settings) => {
                 setInitialState((preInitialState) => ({
                   ...preInitialState,

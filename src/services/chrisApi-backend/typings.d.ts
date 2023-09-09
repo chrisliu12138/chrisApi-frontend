@@ -153,9 +153,9 @@ declare namespace API {
     id?: number;
     method?: string;
     requestHeader?: string;
-    requestParams?: string;
     responseHeader?: string;
     status?: number;
+    userRequestParams?: string;
   };
 
   type listInterfaceInfoByPageUsingGETParams = {

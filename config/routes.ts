@@ -27,15 +27,14 @@ export default [
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'register',
+        path: '/user/register',
+        component: './User/Register',
+      },
     ],
   },
 
-  // {
-  //   name: 'Interface Management',
-  //   icon: 'table',
-  //   path: '/admin/interface_info',
-  //   component: './Admin/InterfaceInfo',
-  // },
   {
     path: '/admin',
     name: 'admin',

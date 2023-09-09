@@ -19,7 +19,7 @@ const InterfaceInfo: React.FC = () => {
   const [invokeLoading, setInvokeLoading] = useState(false);
   const [data, setData] = useState<API.InterfaceInfo>();
   const [invokeRes, setInvokeRes] = useState<any>();
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const {initialState, setInitialState } = useModel('@@initialState');
   const [invokeLeftNum, setInvokeLeftNum] = useState<any>(0);
   const [invokeTotalNum, setInvokeTotalNum] = useState<any>(0);
   const placeholder = '示例：{"username": "chrisliu"}';
@@ -33,7 +33,7 @@ const InterfaceInfo: React.FC = () => {
     }
     try {
       await addUserInterfaceInfoUsingPOST({
-        userId: initialState?.currentUser?.id,
+        userId: initialState?.loginUser?.id,
         interfaceInfoId: Number(params.id),
         leftNum: 10,
       });
@@ -67,7 +67,7 @@ const InterfaceInfo: React.FC = () => {
   const getInvokeCount = async () => {
     try {
       const res = await getUserInterfaceInfoByUserIdAndInterfaceInfoIdUsingGET({
-        userId: initialState?.currentUser?.id,
+        userId: initialState?.loginUser?.id,
         interfaceInfoId: Number(params.id),
       });
       setInvokeLeftNum(res?.data?.leftNum);
@@ -87,7 +87,7 @@ const InterfaceInfo: React.FC = () => {
           <Descriptions column={2}>
             <Descriptions.Item label="Interface Name">{data?.name}</Descriptions.Item>
             <Descriptions.Item label="Interface Description">{data?.description}</Descriptions.Item>
-            <Descriptions.Item label="Interface Status">{data?.status ? 'On' : 'Off'}</Descriptions.Item>
+            <Descriptions.Item label="Interface Status">{data?.status ? 'ON' : 'OFF'}</Descriptions.Item>
             <Descriptions.Item label="Interface Method">{data?.method}</Descriptions.Item>
             <Descriptions.Item label="Url">{data?.url}</Descriptions.Item>
             <Descriptions.Item label="Request Params">{data?.requestParams}</Descriptions.Item>
@@ -105,7 +105,7 @@ const InterfaceInfo: React.FC = () => {
       <Card title="Request parameter" style={{ marginTop: 18 }}>
         <Form name="invoke" layout="vertical" onFinish={onFinish}>
           {Number(params?.id) === 1 ? (
-            <Form.Item name="requestParams">
+            <Form.Item name="UserRequestParams">
               <Input.TextArea placeholder={placeholder} />
             </Form.Item>
           ) : (
@@ -124,7 +124,7 @@ const InterfaceInfo: React.FC = () => {
             <Descriptions.Item>{invokeRes}</Descriptions.Item>
           </Descriptions>
         ) : (
-          <>请先点击调用获取结果</>
+          <>Please click on the call first to get the result</>
         )}
       </Card>
       {/*{<Card title="调用次数" style={{ marginTop: 18 }}>*/}

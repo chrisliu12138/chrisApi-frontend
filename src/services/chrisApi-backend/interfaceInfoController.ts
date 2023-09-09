@@ -49,8 +49,8 @@ export async function getInterfaceInfoByIdUsingGET(
 
 /** invokeInterface POST /api/interfaceInfo/invoke */
 export async function invokeInterfaceUsingPOST(
-  body: API.InterfaceInfoInvokeRequest,
-  options?: { [key: string]: any },
+  body: { requestParams: any; id: number },
+  options?: { [p: string]: any },
 ) {
   return request<API.BaseResponseobject>('/api/interfaceInfo/invoke', {
     method: 'POST',

@@ -1,15 +1,6 @@
 // @ts-nocheck
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import {
-  FooterToolbar,
-  PageContainer,
-  ProDescriptions,
-  ProTable,
-} from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import CreateModal from "@/pages/Admin/InterfaceInfo/components/CreateModal";
+import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 import {
   addInterfaceInfoUsingPOST,
   deleteInterfaceInfoUsingPOST,
@@ -18,12 +9,23 @@ import {
   onlineInterfaceInfoUsingPOST,
   updateInterfaceInfoUsingPOST
 } from "@/services/chrisApi-backend/interfaceInfoController";
+import { PlusOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import {
+  FooterToolbar,
+  PageContainer,
+  ProTable,
+} from '@ant-design/pro-components';
+import { SettingDrawer } from '@ant-design/pro-components';
+
+import { FormattedMessage, useIntl } from '@umijs/max';
+import { Button, message } from 'antd';
+import React, { useRef, useState } from 'react';
+
 import type {SortOrder} from "antd/lib/table/interface";
-import CreateModal from "@/pages/Admin/InterfaceInfo/components/CreateModal";
-import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 
 
-const TableList: React.FC = () => {
+const InterfaceInfo: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -36,8 +38,9 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
+  const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo>([]);
+  const [currentId, setCurrentId] = useState<number>();
 
   /**
    * @en-US Add node
@@ -67,36 +70,23 @@ const TableList: React.FC = () => {
    *
    * @param fields
    */
-  // const handleUpdate = async (fields: API.InterfaceInfo) => {
-  //   const hide = message.loading('Modifying');
-  //   try {
-  //     await updateInterfaceInfoUsingPOST({...fields});
-  //     hide();
-  //     message.success('Modified successfully');
-  //     actionRef.current?.reload(); //修改成功自动刷新
-  //     return true;
-  //   } catch (error: any) {
-  //     hide();
-  //     message.error('Modification failed, please try again!'+ error.message);
-  //     return false;
-  //   }
-  // };
   const handleUpdate = async (fields: API.InterfaceInfo) => {
       if (!currentRow) {
         return;
       }
-      const hide = message.loading('修改中');
+      const hide = message.loading('Modifying');
       try {
         await updateInterfaceInfoUsingPOST({
           id: currentRow.id,
           ...fields,
         });
         hide();
-        message.success('操作成功');
+        message.success('Modified successfully');
+        // actionRef.current?.reload(); //修改成功自动刷新
         return true;
       } catch (error: any) {
         hide();
-        message.error('操作失败，' + error.message);
+        message.error('Modification failed, please try again! ' + error.message);
         return false;
       }
     };
@@ -118,7 +108,7 @@ const TableList: React.FC = () => {
       return true;
     } catch (error: any) {
       hide();
-      message.error('Online failed, please try again' + error.message);
+      message.error('Online failed, please try again ' + error.message);
       return false;
     }
   };
@@ -141,7 +131,7 @@ const TableList: React.FC = () => {
       return true;
     } catch (error: any) {
       hide();
-      message.error('Offline failed, please try again' + error.message);
+      message.error('Offline failed, please try again ' + error.message);
       return false;
     }
   };
@@ -180,6 +170,7 @@ const TableList: React.FC = () => {
       title: 'Id',
       dataIndex: 'id',
       valueType: 'index',
+      hideInTable: true,
     },
     {
       title: 'Interface Name',
@@ -196,6 +187,7 @@ const TableList: React.FC = () => {
       title: 'Description',
       dataIndex: 'description',
       valueType: 'textarea',
+      hideInSearch: true,
     },
     {
       title: 'Method',
@@ -203,19 +195,31 @@ const TableList: React.FC = () => {
       valueType: 'text',
     },
     {
+      title: 'RequestParams',
+      dataIndex: 'requestParams',
+      valueType: 'jsonCode',
+      // hideInTable: true,
+
+    },
+    {
       title: 'RequestHeader',
       dataIndex: 'requestHeader',
-      valueType: 'textarea',
+      valueType: 'jsonCode',
+      hideInSearch: true,
     },
     {
       title: 'ResponseHeader',
       dataIndex: 'responseHeader',
-      valueType: 'textarea',
+      valueType: 'jsonCode',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: 'Url',
       dataIndex: 'url',
       valueType: 'text',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: 'Status',
@@ -223,11 +227,11 @@ const TableList: React.FC = () => {
       hideInForm: true,
       valueEnum: {
         0: {
-          text: 'Shut down',
+          text: 'OFF',
           status: 'Default',
         },
         1: {
-          text: 'Open',
+          text: 'ON',
           status: 'Processing',
         },
       },
@@ -237,12 +241,16 @@ const TableList: React.FC = () => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInForm: true, //在表单项中隐藏
+      // hideInTable: true,
+
     },
     {
       title: 'UpdateTime',
       dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInForm: true,
+      hideInTable: true,
+
     },
     {
       title: 'Operating',
@@ -250,6 +258,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
+          type="text"
           key="config"
           onClick={() => {
             handleUpdateModalVisible(true);
@@ -257,22 +266,22 @@ const TableList: React.FC = () => {
           }}
         >
           Modify
-          {/*<FormattedMessage id="pages.searchTable.config" defaultMessage="" />*/}
         </a>,
 
-          record.status === 0 ? <a
-          key="config"
+        record.status === 0 ? <Button
+          type="text"
+          key="online"
           onClick={() => {
             handleOnline(record);
             // setCurrentRow(record);
           }}
         >
           Online
-        </a> : null,
+        </Button> : null,
         record.status === 1 ? <Button
           type="text"
           danger
-          key="config"
+          key="offline"
           onClick={() => {
             handleOffline(record);
             // setCurrentRow(record);
@@ -382,6 +391,8 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
 
+
+
       <UpdateModal
         columns={columns}
         onSubmit={async (value) => {
@@ -404,34 +415,34 @@ const TableList: React.FC = () => {
         values={currentRow || {}}
       />
 
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
+      {/*<SettingDrawer*/}
+      {/*  width={600}*/}
+      {/*  open={showDetail}*/}
+      {/*  onClose={() => {*/}
+      {/*    setCurrentRow(undefined);*/}
+      {/*    setShowDetail(false);*/}
+      {/*  }}*/}
+      {/*  closable={false}*/}
+      {/*>*/}
+      {/*  {currentRow?.name && (*/}
+      {/*    <ProDescriptions<API.RuleListItem>*/}
+      {/*      column={2}*/}
+      {/*      title={currentRow?.name}*/}
+      {/*      request={async () => ({*/}
+      {/*        data: currentRow || {},*/}
+      {/*      })}*/}
+      {/*      params={{*/}
+      {/*        id: currentRow?.name,*/}
+      {/*      }}*/}
+      {/*      columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}*/}
+      {/*    />*/}
+      {/*  )}*/}
+      {/*</SettingDrawer>*/}
       <CreateModal columns={columns} onCancel={()=>{handleModalVisible(false)}} onSubmit={(values)=>{handleAdd(values)}} visible={createModalVisible} />
     </PageContainer>
   );
 };
 
-export default TableList;
+export default InterfaceInfo;
 
 // export default InterfaceInfo;
